@@ -68,7 +68,10 @@ class Benchmark:
                 found = False
                 
                 for predictedEx in predictedExtractions:
-
+                    if output_fn in predictedEx.matched:
+                        # This predicted extraction was already matched against a gold extraction
+                        # Don't allow to match it again
+                        continue
                     
                     if matchingFunc(goldEx, 
                                     predictedEx, 

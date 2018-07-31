@@ -86,9 +86,6 @@ class Matcher:
         arg2Sim = arg2.similarity(exArg2)
 
         bools = arg1Sim > Matcher.SPACY_THRESHOLD and predSim > Matcher.PRED_THRESHOLD and arg2Sim > Matcher.SPACY_THRESHOLD
-        if bools:
-            print("ref ", sRef)
-            print("ex ", sEx)
         return bools #and Matcher.lexicalMatch(ref, ex, ignorePunctuation, ignoreCase)
 
     @staticmethod
@@ -131,9 +128,9 @@ class Matcher:
     
     # CONSTANTS
     BLEU_THRESHOLD = 0.4
-    LEXICAL_THRESHOLD = 0.2 # Note: changing this value didn't change the ordering of the tested systems
-    SPACY_THRESHOLD = 0.3
-    PRED_THRESHOLD = 0.3
+    LEXICAL_THRESHOLD = 0.4 # Note: changing this value didn't change the ordering of the tested systems
+    SPACY_THRESHOLD = 0.6
+    PRED_THRESHOLD = 0.5
     stopwords = stopwords.words('english') + list(string.punctuation)
 
 
