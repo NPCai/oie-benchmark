@@ -63,16 +63,12 @@ class Benchmark:
                 continue
                 
             predictedExtractions = predicted[sent]
-            
             for goldEx in goldExtractions:
                 correctTotal += 1
                 found = False
                 
                 for predictedEx in predictedExtractions:
-                    if output_fn in predictedEx.matched:
-                        # This predicted extraction was already matched against a gold extraction
-                        # Don't allow to match it again
-                        continue
+
                     
                     if matchingFunc(goldEx, 
                                     predictedEx, 
@@ -190,7 +186,7 @@ if __name__ == '__main__':
 
     logging.info("Writing PR curve of {} to {}".format(predicted.name, out_filename))
     b.compare(predicted = predicted.oie, 
-               matchingFunc = Matcher.spacyMatch,
+               matchingFunc = Matcher.complexMatch,
                output_fn = out_filename)
     
         

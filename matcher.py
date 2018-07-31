@@ -47,8 +47,6 @@ class Matcher:
     def spacyMatch(ref, ex, ignorePunctuation, ignoreCase):
         sRef = ref.bow()
         sEx = ex.bow()
-        print("pred", sEx)
-        print(sRef)
 
         if ignoreCase:
             sRef = sRef.lower()
@@ -58,6 +56,40 @@ class Matcher:
         spacyEx = nlp(sEx)
         coverage = spacyRef.similarity(spacyEx)
         return coverage > Matcher.SPACY_THRESHOLD
+
+    @staticmethod
+    def complexMatch(ref, ex, ignorePunctuation, ignoreCase):
+        sRef = ref.get_tuple()
+        sEx = ex.get_tuple()
+        
+
+        if sRef == None or sEx == None: # Tuple length less than 2
+            return False
+
+        arg1 = nlp(sRef[0])
+        exArg1 = nlp(sEx[0])
+
+        if len(exArg1) > len(arg1) * 2:
+            return False
+
+        pred = nlp(sRef[1])
+        exPred = nlp(sEx[1])
+
+        arg2 = nlp(sRef[2])
+        exArg2 = nlp(sEx[2])
+
+        if len(exArg2) > len(arg2) * 2:
+            return False
+
+        arg1Sim = arg1.similarity(exArg1)
+        predSim = pred.similarity(exPred)
+        arg2Sim = arg2.similarity(exArg2)
+
+        bools = arg1Sim > Matcher.SPACY_THRESHOLD and predSim > Matcher.PRED_THRESHOLD and arg2Sim > Matcher.SPACY_THRESHOLD
+        if bools:
+            print("ref ", sRef)
+            print("ex ", sEx)
+        return bools #and Matcher.lexicalMatch(ref, ex, ignorePunctuation, ignoreCase)
 
     @staticmethod
     def lexicalMatch(ref, ex, ignorePunctuation, ignoreCase):
@@ -99,8 +131,9 @@ class Matcher:
     
     # CONSTANTS
     BLEU_THRESHOLD = 0.4
-    LEXICAL_THRESHOLD = 0.5 # Note: changing this value didn't change the ordering of the tested systems
-    SPACY_THRESHOLD = 0.75
+    LEXICAL_THRESHOLD = 0.2 # Note: changing this value didn't change the ordering of the tested systems
+    SPACY_THRESHOLD = 0.3
+    PRED_THRESHOLD = 0.3
     stopwords = stopwords.words('english') + list(string.punctuation)
 
 
