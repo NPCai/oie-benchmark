@@ -28,9 +28,21 @@ class Matcher:
         return bleu > Matcher.BLEU_THRESHOLD
     
     @staticmethod
-    def lexicalMatch(ref, ex, ignoreStopwords, ignoreCase):
-        sRef = ref.bow().split(' ')
-        sEx = ex.bow().split(' ')
+    def lexicalMatch(ref, ex, ignorePunctuation, ignoreCase):
+        sRef = ref.bow()
+        sEx = ex.bow()
+
+        if ignoreCase:
+            sRef = sRef.lower()
+            sEx = sEx.lower()
+
+        sRef = sRef.split(' ')
+        sEx = sEx.split(' ')
+
+        if ignorePunctuation:
+            sRef = Matcher.removePunctuation(sRef)
+            sEx = Matcher.removePunctuation(sEx)
+            
         count = 0
         
         for w1 in sRef:
@@ -43,12 +55,15 @@ class Matcher:
         #       being too long
         coverage = float(count) / len(sRef)
 
-        
         return coverage > Matcher.LEXICAL_THRESHOLD
     
     @staticmethod
     def removeStopwords(ls):
         return [w for w in ls if w.lower() not in Matcher.stopwords]
+
+    @staticmethod
+    def removePunctuation(ls):
+        return [w for w in ls if w.lower() not in list(string.punctuation)]
     
     # CONSTANTS
     BLEU_THRESHOLD = 0.4

@@ -49,6 +49,7 @@ class Benchmark:
         
         correctTotal = 0
         unmatchedCount = 0        
+        nothere = 0
         predicted = Benchmark.normalizeDict(predicted)
         gold = Benchmark.normalizeDict(self.gold)
                 
@@ -56,6 +57,7 @@ class Benchmark:
             if sent not in predicted:
                 # The extractor didn't find any extractions for this sentence
                 for goldEx in goldExtractions:   
+                    nothere += 1
                     unmatchedCount += len(goldExtractions)
                     correctTotal += len(goldExtractions)
                 continue
@@ -74,7 +76,7 @@ class Benchmark:
                     
                     if matchingFunc(goldEx, 
                                     predictedEx, 
-                                    ignoreStopwords = True, 
+                                    ignorePunctuation = True, 
                                     ignoreCase = True):
                         
                         y_true.append(1)
@@ -90,7 +92,7 @@ class Benchmark:
                 # Add false positives
                 y_true.append(0)
                 y_scores.append(predictedEx.confidence)
-                
+        print("nonhere,", nothere)
         y_true = y_true
         y_scores = y_scores
         
