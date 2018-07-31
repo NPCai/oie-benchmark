@@ -18,6 +18,11 @@ class Extraction:
         self.is_mwp = False
         self.question_dist = question_dist
 
+    def get_tuple(self):
+        if len(self.args) >= 2:
+            return self.args[0], self.pred, self.args[1]
+        return None # Less than 2 args
+
     def distArgFromPred(self, arg):
         assert(len(self.pred) == 2)
         dists = []
