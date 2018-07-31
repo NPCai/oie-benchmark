@@ -90,6 +90,5 @@ ENV/
 
 # Proejct specific
 QASRL-full/
-oie_corpus/
 tmp_examples/
 *\#*
