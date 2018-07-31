@@ -18,7 +18,7 @@ class NeuralReader(OieReader):
                     currentSent = ''.join(i + " " for i in tmp).strip()
                
                 if data.startswith("[") and currentSent != None:
-                    confidence = -1 * float(data[1: data.index("]")])
+                    confidence = float(data[1: data.index("]")])
                     tup = ast.literal_eval(str(data[data.index(" ") :]).strip())
                     tup = ''.join(i + " " for i in tup).strip()
                     tup = tup.split("<>")

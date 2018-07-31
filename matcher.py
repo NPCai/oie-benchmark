@@ -1,10 +1,11 @@
 import string
 from nltk.translate.bleu_score import sentence_bleu
 from nltk.corpus import stopwords
+import gensim 
 
 class Matcher:
     @staticmethod
-    def bowMatch(ref, ex, ignoreStopwords, ignoreCase):
+    def bowMatch(ref, ex, ignorePunctuation, ignoreCase):
         s1 = ref.bow()
         s2 = ex.bow()
         if ignoreCase:
@@ -21,10 +22,22 @@ class Matcher:
         return sorted(s1Words) == sorted(s2Words)
     
     @staticmethod
-    def bleuMatch(ref, ex, ignoreStopwords, ignoreCase):
+    def bleuMatch(ref, ex, ignorePunctuation, ignoreCase):
         sRef = ref.bow()
         sEx = ex.bow()
-        bleu = sentence_bleu(references = [sRef.split(' ')], hypothesis = sEx.split(' '))
+
+        if ignoreCase:
+            sRef = sRef.lower()
+            sEx = sEx.lower()
+
+        sRef = sRef.split(' ')
+        sEx = sEx.split(' ')
+
+        if ignorePunctuation:
+            sRef = Matcher.removePunctuation(sRef)
+            sEx = Matcher.removePunctuation(sEx)
+
+        bleu = sentence_bleu(references = [sRef], hypothesis = sEx)
         return bleu > Matcher.BLEU_THRESHOLD
     
     @staticmethod
@@ -53,7 +66,37 @@ class Matcher:
         # We check how well does the extraction lexically cover the reference
         # Note: this is somewhat lenient as it doesn't penalize the extraction for
         #       being too long
-        coverage = float(count) / len(sRef)
+        coverage = float(count) / (len(sRef))
+
+        return coverage > Matcher.LEXICAL_THRESHOLD
+
+    @staticmethod
+    def blackBoxMatch(ref, ex, ignorePunctuation, ignoreCase):
+        sRef = ref.bow()
+        sEx = ex.bow()
+
+        if ignoreCase:
+            sRef = sRef.lower()
+            sEx = sEx.lower()
+
+        sRef = sRef.split(' ')
+        sEx = sEx.split(' ')
+
+        if ignorePunctuation:
+            sRef = Matcher.removePunctuation(sRef)
+            sEx = Matcher.removePunctuation(sEx)
+            
+        count = 0
+        
+        for w1 in sRef:
+            for w2 in sEx:
+                if w1 == w2:
+                    count += 1
+                    
+        # We check how well does the extraction lexically cover the reference
+        # Note: this is somewhat lenient as it doesn't penalize the extraction for
+        #       being too long
+        coverage = float(count) / (len(sRef))
 
         return coverage > Matcher.LEXICAL_THRESHOLD
     
