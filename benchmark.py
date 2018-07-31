@@ -53,7 +53,7 @@ class Benchmark:
         predicted = Benchmark.normalizeDict(predicted)
         gold = Benchmark.normalizeDict(self.gold)
                 
-        for sent, goldExtractions in gold.items():
+        for sent, goldExtractions in list(gold.items()):
             if sent not in predicted:
                 # The extractor didn't find any extractions for this sentence
                 for goldEx in goldExtractions:   
@@ -92,7 +92,7 @@ class Benchmark:
                 # Add false positives
                 y_true.append(0)
                 y_scores.append(predictedEx.confidence)
-        print("nonhere,", nothere)
+        print(("nonhere,", nothere))
         y_true = y_true
         y_scores = y_scores
         
@@ -104,7 +104,7 @@ class Benchmark:
         # write PR to file
         with open(output_fn, 'w') as fout:
             fout.write('{0}\t{1}\n'.format("Precision", "Recall"))
-            for cur_p, cur_r in sorted(zip(p, r), key = lambda (cur_p, cur_r): cur_r):
+            for cur_p, cur_r in sorted(zip(p, r), key = lambda cur_p_cur_r: cur_p_cur_r[1]):
                 fout.write('{0}\t{1}\n'.format(cur_p, cur_r))
     
     @staticmethod
@@ -117,11 +117,12 @@ class Benchmark:
     # Helper functions:
     @staticmethod
     def normalizeDict(d):
-        return dict([(Benchmark.normalizeKey(k), v) for k, v in d.items()])
+        return dict([(Benchmark.normalizeKey(k), v) for k, v in list(d.items())])
     
     @staticmethod
     def normalizeKey(k):
-        return Benchmark.removePunct(unicode(Benchmark.PTB_unescape(k.replace(' ','')), errors = 'ignore'))
+        imd = str(Benchmark.PTB_unescape(k.replace(' ','')))
+        return Benchmark.removePunct(imd)
 
     @staticmethod
     def PTB_escape(s):

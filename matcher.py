@@ -1,7 +1,6 @@
 import string
 from nltk.translate.bleu_score import sentence_bleu
 from nltk.corpus import stopwords
-import gensim 
 
 class Matcher:
     @staticmethod
