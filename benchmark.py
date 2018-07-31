@@ -190,7 +190,7 @@ if __name__ == '__main__':
 
     logging.info("Writing PR curve of {} to {}".format(predicted.name, out_filename))
     b.compare(predicted = predicted.oie, 
-               matchingFunc = Matcher.lexicalMatch,
+               matchingFunc = Matcher.spacyMatch,
                output_fn = out_filename)
     
         
