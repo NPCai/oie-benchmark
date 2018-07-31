@@ -47,6 +47,8 @@ class Matcher:
     def spacyMatch(ref, ex, ignorePunctuation, ignoreCase):
         sRef = ref.bow()
         sEx = ex.bow()
+        print("pred", sEx)
+        print(sRef)
 
         if ignoreCase:
             sRef = sRef.lower()
