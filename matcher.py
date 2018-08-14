@@ -61,16 +61,14 @@ class Matcher:
     def complexMatch(ref, ex, ignorePunctuation, ignoreCase):
         sRef = ref.get_tuple()
         sEx = ex.get_tuple()
-        
-
-        if sRef == None or sEx == None: # Tuple length less than 2
+        if ex.confidence > 0.4:
+            print("ref ", ref.get_tuple())
+            print("ex ", ex.get_tuple())
+        if sRef == None or sEx == None or len(ex.bow().split(' ')) > len(ref.bow().split(' ')) * 2: # Tuple length less than 2
             return False
 
         arg1 = nlp(sRef[0])
         exArg1 = nlp(sEx[0])
-
-        if len(exArg1) > len(arg1) * 2:
-            return False
 
         pred = nlp(sRef[1])
         exPred = nlp(sEx[1])
@@ -78,20 +76,20 @@ class Matcher:
         arg2 = nlp(sRef[2])
         exArg2 = nlp(sEx[2])
 
-        if len(exArg2) > len(arg2) * 2:
-            return False
 
         arg1Sim = arg1.similarity(exArg1)
         predSim = pred.similarity(exPred)
         arg2Sim = arg2.similarity(exArg2)
 
         bools = arg1Sim > Matcher.SPACY_THRESHOLD and predSim > Matcher.PRED_THRESHOLD and arg2Sim > Matcher.SPACY_THRESHOLD
-        return bools #and Matcher.lexicalMatch(ref, ex, ignorePunctuation, ignoreCase)
+        toret = bools and Matcher.lexicalMatch(ref, ex, ignorePunctuation, ignoreCase)
+        return toret
 
     @staticmethod
     def lexicalMatch(ref, ex, ignorePunctuation, ignoreCase):
         sRef = ref.bow()
         sEx = ex.bow()
+
 
         if ignoreCase:
             sRef = sRef.lower()
@@ -114,7 +112,7 @@ class Matcher:
         # We check how well does the extraction lexically cover the reference
         # Note: this is somewhat lenient as it doesn't penalize the extraction for
         #       being too long
-        coverage = float(count) / (len(sRef))
+        coverage = float(count) / (len(sEx))
 
         return coverage > Matcher.LEXICAL_THRESHOLD
     
@@ -128,9 +126,9 @@ class Matcher:
     
     # CONSTANTS
     BLEU_THRESHOLD = 0.4
-    LEXICAL_THRESHOLD = 0.4 # Note: changing this value didn't change the ordering of the tested systems
-    SPACY_THRESHOLD = 0.6
-    PRED_THRESHOLD = 0.5
+    LEXICAL_THRESHOLD = 0.3 # Note: changing this value didn't change the ordering of the tested systems
+    SPACY_THRESHOLD = 0.2
+    PRED_THRESHOLD = 0.2
     stopwords = stopwords.words('english') + list(string.punctuation)
 
 
