@@ -49,5 +49,5 @@ if __name__ == '__main__':
     plt.xlim([0.0, 1.0])
     plt.xlabel('Recall')
     plt.ylabel('Precision')
-    plt.legend(loc="lower right")
+    plt.legend(loc="upper right")
     plt.savefig(output_file)
