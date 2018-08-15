@@ -64,7 +64,7 @@ class Matcher:
         if ex.confidence > 0.4:
             print("ref ", ref.get_tuple())
             print("ex ", ex.get_tuple())
-        if sRef == None or sEx == None or len(ex.bow().split(' ')) > len(ref.bow().split(' ')) * 2: # Tuple length less than 2
+        if sRef == None or sEx == None : # Tuple length less than 2
             return False
 
         arg1 = nlp(sRef[0])
