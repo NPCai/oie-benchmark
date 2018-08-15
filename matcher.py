@@ -64,7 +64,7 @@ class Matcher:
         if ex.confidence > 0.4:
             print("ref ", ref.get_tuple())
             print("ex ", ex.get_tuple())
-        if sRef == None or sEx == None : # Tuple length less than 2
+        if sRef == None or sEx == None or len(ex.bow().split(' ')) > len(ref.bow().split(' ')) * 2: # Tuple length less than 2
             return False
 
         arg1 = nlp(sRef[0])
@@ -112,7 +112,7 @@ class Matcher:
         # We check how well does the extraction lexically cover the reference
         # Note: this is somewhat lenient as it doesn't penalize the extraction for
         #       being too long
-        coverage = float(count) / (len(sEx))
+        coverage = float(count) / (len(sRef))
 
         return coverage > Matcher.LEXICAL_THRESHOLD
     
