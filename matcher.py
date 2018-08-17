@@ -112,7 +112,7 @@ class Matcher:
         # We check how well does the extraction lexically cover the reference
         # Note: this is somewhat lenient as it doesn't penalize the extraction for
         #       being too long
-        coverage = float(count) / (len(sRef))
+        coverage = float(count) / (len(sEx))
 
         return coverage > Matcher.LEXICAL_THRESHOLD
     
